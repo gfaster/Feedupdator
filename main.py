@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from databases import Database
 from sqlite3 import IntegrityError
+import re
 
 config = dotenv_values('.env')
 database = Database("sqlite:///{0}".format(config['DATABASE']))
@@ -27,10 +28,13 @@ async def on_ready():
 	await db_setup()
 	print('We have logged in as {0.user}'.format(bot))
 
+def san(text):
+	return re.sub(r'[()";]', '', text)
+
 
 @bot.command(help='add a follow for this channel')
 async def add(ctx, *args):
-	keyword = ' '.join(args)
+	keyword = san(' '.join(args))
 	if (len(keyword) >= 1024):
 		await ctx.send('too long!')
 		return
@@ -46,7 +50,7 @@ async def add(ctx, *args):
 
 @bot.command(help='remove a follow for this channel')
 async def remove(ctx, *args):
-	keyword = ' '.join(args)
+	keyword = san(' '.join(args))
 	if (len(keyword) >= 1024):
 		await ctx.send('too long!')
 		return
