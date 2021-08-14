@@ -185,14 +185,14 @@ async def github(ctx):
 
 
 async def updatePeriodic():
+	await bot.wait_until_ready()
+	await asyncio.sleep(3)
 	while True:
 		await refresh(bot.get_channel(int(config['UPDATE_CHANNEL'])))
 		await asyncio.sleep(int(config['REFRESH_SLEEP']))
 
-async def main():
-	await updatePeriodic()
-	await bot.run(config['TOKEN'])
 
-if __name__ == '__main__':
-	asyncio.run(main())
+bot.loop.create_task(updatePeriodic())
+bot.run(config['TOKEN'])
+
 
